@@ -1,0 +1,155 @@
+
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{graphicx}
+
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue}
+\sisetup{detect-all, per-mode=symbol, exponent-product=\cdot, output-decimal-marker=.}
+
+\begin{document}
+
+\begin{center}
+{\LARGE \textbf{Corrugated Horn Design Report}\\[6pt]
+\end{center}
+
+
+
+\section*{Dimensional Data}
+
+
+\begin{itemize}[leftmargin=1.4em]
+  \item Length (Throat to Aperture): $L=\SI{80.0}{mm}$.
+
+
+  \item Wall thickness: $t_{\text{wall}}\in\SIrange{3}{4}{mm}$ (noted range).
+  \item Number of corrugations: $N=6$.
+  \item Groove centers from throat plane (mm):\\
+        $\{\,\SI{6.7}{},\ \SI{20.0}{},\ \SI{33.3}{},\ \SI{46.6}{},\ \SI{59.9}{},\ \SI{73.2}{}\,\}$.
+  \item Groove radial depths (mm): $\{\,\SI{2}{},\ \SI{4}{},\ \SI{6}{},\ \SI{8}{},\ \SI{10}{},\ \SI{10}{}\,\}$.
+  \item Groove axial width: $w_g=\SI{8.8}{mm}$.
+  \item Groove pitch (center-to-center): $p=\SI{13.33}{mm}$.
+\end{itemize}
+
+\begin{itemize}[leftmargin=1.4em]
+  \item \textbf{$2a$}: the full aperture diameter ($D_a=\SI{54}{mm}$).
+  \item \textbf{$D_t$}: the throat diameter ($\SI{35}{mm}$).
+  \item \textbf{$p$}: corrugation period (center-to-center), $\SI{13.33}{mm}$.
+  \item \textbf{$w_g$}: groove axial width, $\SI{8.8}{mm}$.
+  \item \textbf{$d$}: groove depth; sequence $\{2,4,6,8,10,10\}\,\si{mm}$.
+  \item \textbf{$t_{\text{wall}}$}: metal wall thickness, \SIrange{3}{4}{mm}.
+  \item \textbf{$t_{\text{tooth}}$}: axial land between grooves, $\SI{4.53}{mm}$.
+  \item \textbf{$\alpha$}: flare half-angle, $\approx \SI{6.77}{\degree}$.
+
+\end{itemize}
+
+
+
+\begin{itemize}[leftmargin=1.4em]
+
+  \item \textbf{Aperture diameter} \textbf{$2a$}: equals $D_a=\SI{54}{mm}$ (i.e., $a=R_a=\SI{27}{mm}$).
+  \item \textbf{Throat diameter} $D_t$: equals \SI{35}{mm}.
+  \item \textbf{Flare half-angle} $\alpha$: defined by the linear inner-wall cone between radii $R_t$ and $R_a$ over $L$.
+  \item \textbf{Groove period} $p$: corrugation center-to-center spacing.
+  \item \textbf{Groove width} $w_g$: axial width of each rectangular corrugation slot.
+  \item \textbf{Tooth (land) thickness} $t_{\text{tooth}}$: axial metal between adjacent slots, $t_{\text{tooth}}=p-w_g$.
+  \item \textbf{Groove depth} $d_k$: radial reduction of the inner wall within the $k$-th groove.
+\end{itemize}
+
+\section*{4.\quad Geometric Model (inner/outer radii)}
+Let $z\in[0,L]$ measure distance from the throat plane toward the aperture.
+The \emph{baseline} (ungrooved) inner radius is the linear cone
+\begin{equation}
+r_{\text{cone}}(z)=R_t + (R_a - R_t)\,\frac{z}{L}.
+\end{equation}
+With rectangular corrugations, the actual inner radius is
+\begin{equation}
+r_{\text{in}}(z)=r_{\text{cone}}(z) - \sum_{k=1}^{N} d_k\,\chi_k(z),\qquad
+\chi_k(z)=\begin{cases}
+1, & z\in[z_{ck}-\tfrac{w_g}{2},\,z_{ck}+\tfrac{w_g}{2}],\\[2pt]
+0, & \text{otherwise},
+\end{cases}
+\end{equation}
+where $z_{ck}$ is the $k$-th groove center. The outer wall is smooth at approximately constant thickness; using the screenshot range,
+\begin{equation}
+r_{\text{out}}(z)=r_{\text{cone}}(z)+t_{\text{wall}},\qquad t_{\text{wall}}\in[\SI{3}{mm},\SI{4}{mm}].
+\end{equation}
+
+\paragraph{Flare half-angle.} From the data
+\begin{equation}
+\alpha=\arctan\!\left(\frac{R_a-R_t}{L}\right)
+= \arctan\!\left(\frac{\SI{27}{mm}-\SI{17.5}{mm}}{\SI{80}{mm}}\right)
+\approx \SI{6.77}{\degree}.
+\end{equation}
+
+\paragraph{Tooth (land) thickness.} With $p=\SI{13.33}{mm}$ and $w_g=\SI{8.8}{mm}$,
+\begin{equation}
+t_{\text{tooth}}=p-w_g=\SI{13.33}{mm}-\SI{8.8}{mm}=\SI{4.53}{mm}.
+\end{equation}
+
+\section*{5.\quad Corrugation Rules from the Screenshots}
+The screenshots encode the standard subwavelength constraints:
+\begin{align}
+p &\approx \frac{\lambda}{3},\label{eq:p}\\
+w_g &\approx 0.22\,\lambda,\label{eq:wg}\\
+d_{\max} &\approx \frac{\lambda}{4}, \label{eq:dmax}
+\end{align}
+with depths increasing along $z$ and saturating near $\lambda/4$ (the last two grooves are \SI{10}{mm} deep).
+
+\section*{6.\quad Operating Wavelength and Frequency (cross-check)}
+Using \eqref{eq:p}--\eqref{eq:dmax} with the provided numbers:
+
+\paragraph{From the pitch:}
+\begin{equation*}
+\lambda_{(p)} \approx 3p = 3\times \SI{13.33}{mm} = \SI{39.99}{mm}.
+\end{equation*}
+
+\paragraph{From the groove width:}
+\begin{equation*}
+\lambda_{(w_g)} \approx \frac{w_g}{0.22} = \frac{\SI{8.8}{mm}}{0.22} = \SI{40.0}{mm}.
+\end{equation*}
+
+\paragraph{From the max depth:}
+\begin{equation*}
+\lambda_{(d)} \approx 4\,d_{\max} = 4\times \SI{10.0}{mm} = \SI{40.0}{mm}.
+\end{equation*}
+
+All three estimates are consistent at $\lambda \approx \SI{40.0}{mm}$. Using the speed of light $c=\SI{299792458}{m/s}$,
+\begin{equation*}
+f=\frac{c}{\lambda}=\frac{\SI{299792458}{m/s}}{\SI{0.0400}{m}} \approx \SI{7.495}{GHz}.
+\end{equation*}
+Hence the design center is approximately \textbf{\SI{7.5}{GHz}}, which aligns with a \SIrange{7}{8}{GHz} operating band suggested by the geometry.
+
+\section*{What the Legends Mean (for drawings)}
+\begin{itemize}[leftmargin=1.4em]
+  \item \textbf{$2a$}: the full aperture diameter ($D_a=\SI{54}{mm}$).
+  \item \textbf{$D_t$}: the throat diameter ($\SI{35}{mm}$).
+  \item \textbf{$p$}: corrugation period (center-to-center), $\SI{13.33}{mm}$.
+  \item \textbf{$w_g$}: groove axial width, $\SI{8.8}{mm}$.
+  \item \textbf{$d$}: groove depth; sequence $\{2,4,6,8,10,10\}\,\si{mm}$.
+  \item \textbf{$t_{\text{wall}}$}: metal wall thickness, \SIrange{3}{4}{mm}.
+  \item \textbf{$t_{\text{tooth}}$}: axial land between grooves, $\SI{4.53}{mm}$.
+  \item \textbf{$\alpha$}: flare half-angle, $\approx \SI{6.77}{\degree}$.
+  \item \textbf{A/B/C}: drawing segments (upstream/smooth/corrugated). Corrugations begin at $z=\ell_s=\SI{2.3}{mm}$.
+\end{itemize}
+
+\section*{8.\quad Notes confined to the screenshots}
+\begin{itemize}[leftmargin=1.4em]
+  \item All numerical values above are \emph{exactly} those shown or algebraic combinations thereof.
+  \item No assumptions beyond the screenshot text and numbers have been introduced.
+  \item Bandwidth, return loss, and pattern performance are not stated in the screenshots and thus are not asserted here.
+\end{itemize}
+
+\bigskip
+\noindent\textit{End of report.}
+
+\end{document}
+"""
+with open("/mnt/data/corrugated_horn_report.tex", "w") as f:
+    f.write(content)
+print("Wrote LaTeX file to /mnt/data/corrugated_horn_report.tex")

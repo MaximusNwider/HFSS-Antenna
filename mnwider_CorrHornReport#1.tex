@@ -1,0 +1,307 @@
+\documentclass[11pt]{article}
+
+% --- Page and typography ---
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\setstretch{1.08}
+\usepackage{parskip}
+\usepackage{microtype}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% --- Math & units ---
+\usepackage{amsmath,amssymb}
+\usepackage{siunitx}
+\sisetup{detect-all, per-mode=symbol, exponent-product=\cdot, output-decimal-marker=.}
+
+% --- Tables & graphics ---
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{caption}
+\captionsetup{font=small, labelfont=bf, justification=centering, singlelinecheck=true}
+\graphicspath{{./}{./figs/}{./images/}}
+\renewcommand{\arraystretch}{1.15}
+
+% --- Lists & color ---
+\usepackage{xcolor}
+\usepackage{enumitem}
+\setlist{leftmargin=1.4em, itemsep=0.25em}
+
+% --- Links ---
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue, citecolor=black}
+
+% Make \autoref output bold hyperlinks (affects figures/tables/equations)
+\makeatletter
+\let\oldautoref\autoref
+\renewcommand{\autoref}[1]{\textbf{\oldautoref{#1}}}
+\makeatother
+% Handy bold, hyperlinked Figure reference macro for plain "Figure N" mentions
+\newcommand{\figref}[1]{\textbf{\hyperref[#1]{Figure~\ref*{#1}}}}
+
+% --- Headers / footers & section styling (formatting only) ---
+\usepackage{fancyhdr, lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize Corrugated Horn Design Report}
+\rhead{\footnotesize Maximus Nwider}
+\cfoot{\footnotesize \thepage\ of \pageref{LastPage}}
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.5em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\bfseries\itshape}{\thesubsubsection}{0.5em}{}
+
+% --- Convenience placeholders (kept, optional to use) ---
+\newcommand{\ph}[1]{\textcolor{gray}{\textit{[Placeholder: #1]}}}
+
+% --- Title (unchanged) ---
+\title{\textbf{Corrugated Horn Design Report}}
+\author{Maximus Nwider}
+\date{}
+\begin{document}
+\maketitle
+
+\tableofcontents
+\hrule\vspace{0.8em}
+
+% =====================================================
+
+
+% =====================================================
+\section{Physical Realization}
+\subsection{Extracted Geometric Parameters Provided From Screenshots}
+\begin{table}[H]
+  \centering
+  \caption{Extracted Flare Geometric Parameters}
+  \label{tab:geom}
+  \begin{tabularx}{\linewidth}{@{}l l X@{}}
+    \toprule
+    \textbf{Variable (symbol)} & \textbf{Value} & \textbf{Brief description} \\
+    \midrule
+    Length $L$ & \SI{80.0}{\milli\meter} & Distance from throat plane to aperture plane. \\
+    Number of corrugations $N$ & 6 & Corrugation count. \\
+    Period $p$ & \SI{13.33}{\milli\meter} & Center-to-center spacing of corrugations. \\
+    Groove width $w_g$ & \SI{8.8}{\milli\meter} & Axial width of each corrugation groove. \\
+    Groove depth $d_k$ & $\{2,4,6,8,10,10\}\,\si{mm}$ & Radial depth of the $k$-th groove. \\
+    Wall thickness $t_{\text{wall}}$ & \SIrange{3}{4}{\milli\meter} & Metal wall thickness of the horn body. \\
+    Tooth $t_{\text{tooth}}$ & \SI{4.53}{\milli\meter} & Metal between each groove; $t_{\text{tooth}}=p-w_g$. \\
+    Flare half-angle $\alpha$ & \SI{6.77}{\degree} . \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.4\textwidth}
+    \centering
+    \includegraphics[width=0.85\linewidth]{FLARE.png}
+    \caption{Matlab rendered cross-section.}
+    \label{fig:matlab_xsec}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.4\textwidth}
+    \centering
+    \includegraphics[width=0.75\linewidth]{image.png}
+    \caption{AutoCAD rendered cross-section.}
+    \label{fig:acad_xsec}
+  \end{subfigure}
+  \caption{To-scale physical realization of the flare section.}
+\end{figure}
+
+
+% =====================================================
+\section{Simulation in HFSS}
+\subsection{Simulation Semantics and Setup}
+\begin{itemize}
+  \item \textbf{Waveport}: To initiate a simulation in HFSS, a waveport must be imposed on the 3D object, to define the source and direction of input radiation, i.e a source. The waveport was assigned at the throat of the design.
+  \item \textbf{PEC cap}: Additionally, to Run the HFSS 3D simulation, a small cylinder of material type:”PEC”
+(Perfect Electrical Conductor) is placed on the opposing face of the previously defined waveport,
+dimensions of this object do not matter for our purposes, as long as it covers the waveport, does
+not dimensionally overlap, and is not too thick, ideally make it as thin as possible.
+  \item \textbf{Open Region}: An arbitrary simulation Boundary is placed, around the 3D design, representing a region of free space to define the simulation boundary around the design, to tell the software where to stop Finite Element analysis.
+\end{itemize}
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    % \includegraphics[width=0.75\linewidth]{"Screenshot 2025-09-08 at 12.49.09 PM.png"}
+    \includegraphics[width=0.62\linewidth]{Screenshot 2025-09-08 at 12.49.09 PM.png}
+    \caption{Enclosing open-region.}
+    \label{fig:open_region}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    % \includegraphics[width=0.62\linewidth]{"Screenshot 2025-09-08 at 1.15.32 PM.png"}
+    \includegraphics[width=0.5\linewidth]{Screenshot 2025-09-08 at 1.15.32 PM.png}
+    \caption{3D model with waveport (red).}
+    \label{fig:waveport}
+  \end{subfigure}
+  \caption{HFSS domain and excitation.}
+\end{figure}
+
+\subsection{Frequency Sweep and Post-Processing}
+\textbf{Solution Setup}, A linear sweep from 5GHz to 9 GHz of "fast type" is run with a maximum delta of $0.05$. Despite ChatGPT's Suggested frequency band of 7-8GHz, you will see that the return losses, at that high of a frequency are much higher, and the "ideal low loss" return loss occurs at \textbf{6.75GHz}, as opposed to 7.5GHz suggested earlier.
+\subsection{Far-Field Results and HPBW}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\linewidth]{farfield.png}
+  \caption{3D far-field plot showing a maximum of 10.4dB Overall Gain in the primary lobe (at \SI{6.75}{GHz}, swept over $\theta$ and $\phi$).}
+  \label{fig:farfield3d}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.98\linewidth]{radplot.png}
+  \caption{Radiation patterns swept used to estimate average HPBW.}
+  \label{fig:radplot}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+
+  % Top row: two smaller panels
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{ph45.png}
+    \caption{$\phi=\SI{45}{\degree}$}
+    \label{fig:phi45}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{ph90.png}
+    \caption{$\phi=\SI{90}{\degree}$}
+    \label{fig:phi90}
+  \end{subfigure}
+
+  \vspace{0.6em}
+
+  % Bottom row: large panel
+  \begin{subfigure}[b]{0.98\textwidth}
+    \centering
+    \includegraphics[width=0.95\linewidth]{phi0.png}
+    \caption{$\phi=\SI{0}{\degree}$}
+    \label{fig:phi0}
+  \end{subfigure}
+
+  \caption{Principal–plane cuts used to extract the half–power beamwidth (HPBW). Markers indicate the \SI{-3}{dB} points bounding the primary lobe in each plane.}
+  \label{fig:hpbw_planes}
+\end{figure}
+
+\textbullet\ As seen in \autoref{fig:hpbw_planes} (\textbf{\subref{fig:phi45}},\,\textbf{\subref{fig:phi90}},\,\textbf{\subref{fig:phi0}}), the separation in $\theta$ between the \SI{-3}{dB} markers lies in the \SIrange{52}{54}{\degree} interval, consistent with the computed average. An independent CST run (Abdelkareem) produced a similar HPBW within $\pm\SI{2}{\degree}$. Accordingly, the HPBW for this geometry is assessed as \SIrange{51}{55}{\degree}.
+
+
+
+
+\subsection{Return Loss \texorpdfstring{$S_{11}$}{S11}}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{return.png}
+  \caption{Return loss over frequency (\SI{5}{GHz}--\SI{9}{GHz}).}
+  \label{fig:return}
+\end{figure}
+
+\textbullet\ As Shown by \figref{fig:return}, for input signals with frequencies hovering around the $6.75GHz$ mark, an extremely minimal portion of the original signal actually gets reflected, acting as a near perfect match, with very minimal loss, this in-fact is what should be represented as the center frequency, for reference when plotting the Far-Field plot, rather than the previously suggested $7.5GHz$ Value.
+
+\textbullet\ Additionally, moving forward with $6.75GHz$ as the locally optimal center frequency, and taking the bandwidth as $\pm 10dB$ from the center frequency, the frequency band would fall between $5.8GHz$ to $7.3GHz$, as opposed to the previously suggested bandwidth of $7-8GHz$.
+
+
+% Requires: \usepackage{subcaption} \usepackage{float} \usepackage{siunitx}
+
+% Requires: \usepackage{subcaption} \usepackage{float} \usepackage{siunitx}
+
+\subsection{Polarization Performance}
+% Consistent full-row sizing for all panels
+\newlength{\rowwidth}\setlength{\rowwidth}{0.98\textwidth}
+\newlength{\rowheight}\setlength{\rowheight}{0.25\textheight} % adjust if you want taller/shorter
+
+\subsubsection{Cross-Polarization}
+\begin{figure}[H]
+  \centering
+
+  \begin{subfigure}[b]{\rowwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=\rowheight,keepaspectratio]{Cross_phi0.png}
+    \caption{$\phi=\SI{0}{\degree}$}
+    \label{fig:cross-phi0}
+  \end{subfigure}
+
+
+  \begin{subfigure}[b]{\rowwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=\rowheight,keepaspectratio]{Cross_phi45.png}
+    \caption{$\phi=\SI{45}{\degree}$}
+    \label{fig:cross-phi45}
+  \end{subfigure}
+
+
+  \begin{subfigure}[b]{\rowwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=\rowheight,keepaspectratio]{Cross_phi90.png}
+    \caption{$\phi=\SI{90}{\degree}$}
+    \label{fig:cross-phi90}
+  \end{subfigure}
+
+  \caption{Cross-polarization cuts at $\phi=\SI{0}{\degree}$, $\SI{45}{\degree}$, and $\SI{90}{\degree}$. Plots are scaled for readability (dynamic range $\pm\SI{10}{dB}$) at \SI{6.75}{GHz}.}
+  \label{fig:cross-cuts}
+\end{figure}
+
+\subsubsection{Co-Polarization}
+\begin{figure}[H]
+  \centering
+
+  \begin{subfigure}[b]{\rowwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=\rowheight,keepaspectratio]{Co_phi0.png}
+    \caption{$\phi=\SI{0}{\degree}$}
+    \label{fig:co-phi0}
+  \end{subfigure}
+
+  \medskip
+
+  \begin{subfigure}[b]{\rowwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=\rowheight,keepaspectratio]{Co_phi45.png}
+    \caption{$\phi=\SI{45}{\degree}$}
+    \label{fig:co-phi45}
+  \end{subfigure}
+
+  \medskip
+
+  \begin{subfigure}[b]{\rowwidth}
+    \centering
+    \includegraphics[width=\linewidth,height=\rowheight,keepaspectratio]{Co_phi90.png}
+    \caption{$\phi=\SI{90}{\degree}$}
+    \label{fig:co-phi90}
+  \end{subfigure}
+
+  \caption{Co-polarization cuts at $\phi=\SI{0}{\degree}$, $\SI{45}{\degree}$, and $\SI{90}{\degree}$. Plots are scaled for readability (dynamic range $\pm\SI{10}{dB}$) at \SI{6.75}{GHz}.}
+  \label{fig:co-cuts}
+\end{figure}
+
+% =====================================================
+\section{Suggested Design -> pending}
+\subsection{Topology and Required Parameters}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.98\linewidth]{suggested.png}
+  \caption{Suggested topology for improved performance.}
+  \label{fig:suggested_topo}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.6\linewidth]{pattern.png}
+  \caption{Target 3D far-field pattern.}
+  \label{fig:target_pattern}
+\end{figure}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.4\linewidth]{2d_suggested.png}
+    \caption{2D Cross-Section}
+    \label{fig:placeholder}
+\end{figure}
+
+% =====================================================
+\section{Discussion and Next Steps}
+
+\end{document}
